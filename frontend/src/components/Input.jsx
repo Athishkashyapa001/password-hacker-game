@@ -1,28 +1,19 @@
 import React from 'react';
 
 const Input = React.forwardRef(({ label, error, helperText, id, className = '', ...props }, ref) => {
-  const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
-  const errorId = `${inputId}-error`;
-  const helperId = `${inputId}-helper`;
+  
 
   return (
-    <div className={`flex flex-col gap-1.5 ${className}`}>
+    <div className={`flex flex-col gap-2 ${className}`}>
       {label && (
-        <label htmlFor={inputId} className="text-sm font-medium text-textPrimary">
+        <label htmlFor={id} className="text-sm font-bold text-textMuted ml-1 tracking-wide uppercase text-[10px]">
           {label}
         </label>
       )}
-      
       <input
-        id={inputId}
+        id={id}
         ref={ref}
-        className={`bg-slate-900 border ${
-          error ? 'border-red-500 focus:border-red-500' : 'border-slate-700 focus:border-primary'
-        } rounded-lg px-4 py-2.5 text-textPrimary placeholder-textMuted focus:outline-none focus:ring-1 ${
-          error ? 'focus:ring-red-500' : 'focus:ring-primary'
-        } transition-colors`}
-        aria-invalid={!!error}
-        aria-describedby={`${error ? errorId : ''} ${helperText ? helperId : ''}`}
+        className="glass-card !bg-white/5 !p-4 rounded-xl text-textPrimary placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300"
         {...props}
       />
       

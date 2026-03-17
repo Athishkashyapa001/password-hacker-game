@@ -13,10 +13,10 @@ const formatUser = (user) => ({
   email: user.email,
   bio: user.bio,
   location: user.location,
-  skillsOffered: user.skillsOffered,
-  skillsWanted: user.skillsWanted,
+  skillsOffered: user.skillsOffered || [],
+  skillsWanted: user.skillsWanted || [],
   profilePicture: user.profilePicture,
-  avgRating: user.avgRating,
+  avgRating: user.avgRating || 0,
   createdAt: user.createdAt,
 });
 
@@ -52,6 +52,8 @@ const register = async (req, res, next) => {
       name,
       email,
       password: hashedPassword,
+      skillsOffered: req.body.skillsOffered || [],
+      skillsWanted: req.body.skillsWanted || [],
     });
 
     const token = generateToken(user._id);
