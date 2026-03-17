@@ -48,124 +48,181 @@ const MarketplacePage = () => {
 
   return (
     <div className="space-y-12 animate-in fade-in duration-700 pb-20">
-      {/* Search & Header Section */}
-      <section className="relative p-10 rounded-[2.5rem] overflow-hidden shadow-luxury">
-        <div className="absolute inset-0 bg-gradient-to-br from-surface to-background opacity-95"></div>
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary/10 blur-[100px] rounded-full"></div>
+import { Search, MapPin, ArrowRight, Filter, Globe, Sparkles, Award, Target, Cpu, Activity, ShieldSearch } from 'lucide-react';
+
+const MarketplacePage = () => {
+  const [users, setUsers] = useState([]);
+  const [query, setQuery] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const fetchUsers = async (searchQuery = '') => {
+    setIsSearching(true);
+    try {
+      const res = await api.get(`/users/search${searchQuery ? `?query=${searchQuery}` : ''}`);
+      setUsers(res.data.users);
+    } catch (err) {
+      console.error('Error fetching users', err);
+    } finally {
+      setLoading(false);
+      setIsSearching(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchUsers(query);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] bg-[#020617]">
+        <Spinner size="lg" className="text-primary" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-16 animate-in fade-in duration-1000 pb-24">
+      {/* Global Interface Section */}
+      <section className="relative p-12 rounded-sm overflow-hidden glass-card border-b-4 border-b-secondary/30">
+        <div className="absolute inset-0 bg-[#020617] opacity-60"></div>
+        <div className="absolute -top-48 -right-48 w-96 h-96 bg-secondary/10 blur-[160px] rounded-full animate-pulse"></div>
         
-        <div className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/10 mb-6 backdrop-blur-md">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-textMuted">Professional Network</span>
+        <div className="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto">
+          <div className="inline-flex items-center gap-3 bg-white/5 px-4 py-2 rounded-sm border border-white/10 mb-8 backdrop-blur-md">
+            <ShieldSearch className="w-4 h-4 text-secondary animate-pulse" />
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-textMuted">Global Exchange Network v4.0</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black mb-6 leading-tight">
-            Discover Your Next <span className="text-gradient">Skill Exchange</span>
+          
+          <h1 className="text-5xl md:text-7xl font-black mb-8 leading-tight text-white tracking-tighter">
+            DISCOVER <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-primary italic">RESOURCE NODES</span>
           </h1>
-          <p className="text-textMuted text-lg mb-10 font-medium">
-            Search through our global community of experts ready to swap knowledge.
+          
+          <p className="text-textMuted text-sm font-medium mb-12 max-w-2xl leading-relaxed uppercase tracking-widest opacity-80">
+            Scanning multi-sector databases for compatible expertise vectors. <span className="text-secondary">Authorization level: Verified.</span>
           </p>
           
-          <form onSubmit={handleSearch} className="w-full flex flex-col sm:flex-row gap-4 p-2 bg-white/5 backdrop-blur-2xl rounded-3xl border border-white/10 shadow-2xl">
+          <form onSubmit={handleSearch} className="w-full flex flex-col sm:flex-row gap-6 p-3 bg-white/[0.03] backdrop-blur-3xl rounded-sm border border-white/10 shadow-luxury">
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary opacity-50" />
               <Input
-                className="!bg-transparent border-none !p-4 pl-12 focus:ring-0 shadow-none"
-                placeholder="Search: 'React', 'Photography', 'San Francisco'..."
+                className="!bg-transparent border-none !p-5 pl-14 focus:ring-0 shadow-none text-white font-black tracking-widest uppercase text-xs"
+                placeholder="INPUT SEARCH PARAMETERS: 'REACT', 'PYTHON', 'UI DESIGN'..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
             </div>
-            <Button type="submit" disabled={isSearching} size="lg" className="rounded-[1.25rem] px-10">
-              {isSearching ? <Spinner size="sm" /> : 'Find Experts'}
+            <Button type="submit" disabled={isSearching} size="lg" className="!rounded-sm px-12 !bg-secondary hover:!bg-secondary/80 text-slate-900 border-none">
+              {isSearching ? <Spinner size="sm" /> : 'INITIALIZE SEARCH'}
             </Button>
           </form>
         </div>
       </section>
 
       {isSearching ? (
-        <div className="flex flex-col items-center justify-center py-20 grayscale opacity-50">
-          <Spinner size="lg" className="mb-6" />
-          <p className="text-sm font-black uppercase tracking-widest text-textMuted animate-pulse">Syncing Network Database...</p>
+        <div className="flex flex-col items-center justify-center py-32 space-y-8">
+          <div className="relative">
+            <div className="absolute inset-0 bg-secondary/20 blur-2xl animate-pulse"></div>
+            <Spinner size="lg" className="text-secondary relative z-10" />
+          </div>
+          <p className="text-[10px] font-black uppercase tracking-[0.5em] text-secondary animate-bounce">Synchronizing Matrix Database...</p>
         </div>
       ) : (
         <>
-          <div className="flex items-center justify-between px-2">
+          <div className="flex items-center justify-between px-4 border-l-2 border-secondary/20">
             <div>
-              <h2 className="text-2xl font-black">{users.length} Specialists Found</h2>
-              <div className="h-1 w-12 bg-primary rounded-full mt-2"></div>
+              <h2 className="text-2xl font-black uppercase tracking-tight text-white">{users.length} COMPATIBLE NODES ONLINE</h2>
+              <div className="h-[2px] w-24 bg-secondary mt-3"></div>
             </div>
-            <Button variant="ghost" size="sm" className="font-bold uppercase tracking-widest text-[10px] border border-white/5">
-              <Filter className="w-4 h-4 mr-2" />
-              Sort & Filter
+            <Button variant="ghost" size="sm" className="font-black uppercase tracking-[0.3em] text-[9px] border border-white/5 !rounded-sm px-6">
+              <Filter className="w-4 h-4 mr-3 text-secondary" />
+              RECALIBRATE FILTERS
             </Button>
           </div>
 
           {users.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
               {users.map((item) => (
-                <Card key={item._id} hoverable className="flex flex-col !p-8 group relative overflow-hidden">
-                  {/* Subtle hover accent */}
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 blur-[40px] rounded-full group-hover:bg-primary/20 transition-all"></div>
-                  
-                  <div className="flex flex-col items-center text-center mb-8 relative z-10">
-                    <div className="relative mb-6">
-                       <Avatar src={item.profilePicture} alt={item.name} size="xl" className="ring-4 ring-white/5" />
-                       <div className="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-4 border-background shadow-teal-glow"></div>
+                <Card key={item._id} className="!p-0 glass-card group overflow-hidden border-b-2 border-transparent hover:border-secondary/50 transition-all duration-500">
+                  <div className="relative h-24 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 to-primary/5 grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+                    <div className="absolute top-4 right-6 bg-background/80 backdrop-blur-md px-3 py-1 rounded-sm border border-white/5 text-[9px] font-black text-secondary tracking-widest shadow-teal-glow">
+                      VERIFIED NODE
+                    </div>
+                  </div>
+
+                  <div className="px-8 pb-8 -mt-12 relative z-10 flex flex-col items-center text-center">
+                    <div className="relative mb-6 group/avatar">
+                       <div className="absolute -inset-1 bg-gradient-to-tr from-secondary to-primary rounded-full blur opacity-20 group-hover/avatar:opacity-50 transition-opacity"></div>
+                       <Avatar src={item.profilePicture} alt={item.name} size="xl" className="ring-4 ring-background shadow-2xl" />
+                       <div className="absolute -bottom-1 -right-1 bg-secondary w-5 h-5 rounded-full border-4 border-background shadow-teal-glow animate-pulse"></div>
                     </div>
                     
-                    <h3 className="font-black text-xl mb-1 group-hover:text-primary transition-colors">{item.name}</h3>
-                    <div className="flex items-center gap-1.5 text-textMuted text-[10px] font-black uppercase tracking-widest">
-                      <MapPin className="w-3 h-3 text-primary" />
-                      {item.location || 'Global Remote'}
+                    <h3 className="font-black text-xl mb-2 text-white group-hover:text-secondary transition-colors tracking-tight">{item.name}</h3>
+                    <div className="flex items-center gap-2 text-textMuted text-[9px] font-black uppercase tracking-[0.2em] italic">
+                      <MapPin className="w-3 h-3 text-secondary" />
+                      {item.location || 'LATENCY: MINIMAL'}
                     </div>
                     
                     <div className="w-full h-px bg-white/5 my-8" />
                     
-                    <div className="w-full space-y-8 text-left">
-                      <div>
-                        <p className="text-[10px] uppercase tracking-[0.2em] text-textMuted font-black mb-4 flex items-center gap-2">
-                           <Award className="w-3 h-3 text-primary" /> Expertise
+                    <div className="w-full space-y-10 text-left mb-10">
+                      <div className="bg-white/[0.02] p-5 rounded-sm border border-white/5 relative overflow-hidden group/item">
+                        <div className="absolute top-0 left-0 w-1 h-full bg-primary/20 group-hover/item:bg-primary transition-colors"></div>
+                        <p className="text-[9px] uppercase tracking-[0.3em] text-textMuted font-black mb-4 flex items-center gap-3">
+                           <Award className="w-3 h-3 text-primary animate-pulse" /> PROFERRED
                         </p>
-                        <div className="flex flex-wrap gap-2 min-h-[50px]">
+                        <div className="flex flex-wrap gap-2 min-h-[40px]">
                           {item.skillsOffered.slice(0, 3).map((skill) => (
-                            <Badge key={skill} variant="primary" className="px-3 py-1">{skill}</Badge>
+                            <div key={skill} className="px-2 py-1 bg-primary/5 border border-primary/20 text-primary text-[9px] font-black uppercase tracking-tighter">
+                                {skill}
+                            </div>
                           ))}
                           {item.skillsOffered.length > 3 && (
-                            <div className="bg-white/5 text-textMuted px-2 py-1 rounded-lg text-[10px] font-bold">+{item.skillsOffered.length - 3}</div>
+                            <div className="bg-white/5 text-textMuted px-2 py-1 rounded-sm text-[8px] font-black">+{item.skillsOffered.length - 3}</div>
                           )}
                         </div>
                       </div>
                       
-                      <div>
-                        <p className="text-[10px] uppercase tracking-[0.2em] text-textMuted font-black mb-4 flex items-center gap-2">
-                           <Target className="w-3 h-3 text-secondary" /> Learning
+                      <div className="bg-white/[0.02] p-5 rounded-sm border border-white/5 relative overflow-hidden group/item">
+                        <div className="absolute top-0 left-0 w-1 h-full bg-secondary/20 group-hover/item:bg-secondary transition-colors"></div>
+                        <p className="text-[9px] uppercase tracking-[0.3em] text-textMuted font-black mb-4 flex items-center gap-3">
+                           <Target className="w-3 h-3 text-secondary animate-pulse" /> ACQUISITION
                         </p>
-                        <div className="flex flex-wrap gap-2 min-h-[50px]">
+                        <div className="flex flex-wrap gap-2 min-h-[40px]">
                           {item.skillsWanted.slice(0, 3).map((skill) => (
-                            <Badge key={skill} variant="neutral" className="px-3 py-1">{skill}</Badge>
+                            <div key={skill} className="px-2 py-1 bg-secondary/5 border border-secondary/20 text-secondary text-[9px] font-black uppercase tracking-tighter">
+                                {skill}
+                            </div>
                           ))}
                           {item.skillsWanted.length > 3 && (
-                            <div className="bg-white/5 text-textMuted px-2 py-1 rounded-lg text-[10px] font-bold">+{item.skillsWanted.length - 3}</div>
+                            <div className="bg-white/5 text-textMuted px-2 py-1 rounded-sm text-[8px] font-black">+{item.skillsWanted.length - 3}</div>
                           )}
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  <Link to={`/profile/${item._id}`} className="mt-auto relative z-10">
-                    <Button variant="secondary" className="w-full">
-                      View Engagement
-                    </Button>
-                  </Link>
+                    <Link to={`/profile/${item._id}`} className="w-full mt-auto">
+                      <Button variant="secondary" className="w-full !rounded-sm tracking-[0.3em] text-[10px]">
+                        ANALYZE NODE
+                      </Button>
+                    </Link>
+                  </div>
                 </Card>
               ))}
             </div>
           ) : (
             <EmptyState 
-              title="End of the Network" 
-              message="No experts found matching your current query. Try broadening your terms."
-              actionText="Reset Search"
+              title="ZERO NODES DETECTED" 
+              message="No expertise nodes matching your current search parameters were found within the global matrix."
+              actionText="RESET SCAN"
               onAction={() => { setQuery(''); fetchUsers(); }}
+              className="glass-card !bg-[#020617] border-dashed border-2 border-white/5"
             />
           )}
         </>
