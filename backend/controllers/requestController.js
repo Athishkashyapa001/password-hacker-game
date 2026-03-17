@@ -78,11 +78,11 @@ const getMyRequests = async (req, res, next) => {
 };
 
 // @desc    Accept a request and create a chat room
-// @route   POST /api/requests/:id/accept
+// @route   POST /api/requests/:requestId/accept
 // @access  Private
 const acceptRequest = async (req, res, next) => {
   try {
-    const request = await SkillRequest.findById(req.params.id);
+    const request = await SkillRequest.findById(req.params.requestId);
 
     if (!request) {
       return res.status(404).json({ success: false, message: 'Request not found' });
@@ -128,11 +128,11 @@ const acceptRequest = async (req, res, next) => {
 };
 
 // @desc    Reject a request
-// @route   POST /api/requests/:id/reject
+// @route   POST /api/requests/:requestId/reject
 // @access  Private
 const rejectRequest = async (req, res, next) => {
   try {
-    const request = await SkillRequest.findById(req.params.id);
+    const request = await SkillRequest.findById(req.params.requestId);
 
     if (!request) {
       return res.status(404).json({ success: false, message: 'Request not found' });

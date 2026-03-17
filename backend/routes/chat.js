@@ -6,7 +6,7 @@ const { protect } = require('../middleware/auth');
 router.use(protect);
 
 router.get('/', getMyChats);
-router.get('/:id', getChat);
-router.post('/:id/message', sendMessage);
+router.get('/:chatId', getChat);
+router.post('/:chatId/message', sendMessage);
 
 module.exports = router;

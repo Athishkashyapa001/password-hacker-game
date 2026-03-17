@@ -1,11 +1,11 @@
 const User = require('../models/User');
 
 // @desc    Get user profile (self or other)
-// @route   GET /api/users/profile/:id?
+// @route   GET /api/users/profile/:userId
 // @access  Private
 const getProfile = async (req, res, next) => {
   try {
-    const userId = req.params.id || req.user._id;
+    const userId = req.params.userId || req.user._id;
     const user = await User.findById(userId).select('-password');
 
     if (!user) {

@@ -12,9 +12,9 @@ const upload = require('../middleware/upload');
 // All user routes are protected
 router.use(protect);
 
-// Basic profile routes (Split to avoid optional parameter syntax issues in production)
+// Basic profile routes (Explicitly split to ensure Express 4/5 compatibility)
 router.get('/profile', getProfile);
-router.get('/profile/:id', getProfile);
+router.get('/profile/:userId', getProfile);
 
 // Update profile with picture upload
 router.put('/profile', upload.single('profilePicture'), updateProfile);

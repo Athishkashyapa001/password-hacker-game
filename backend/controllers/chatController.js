@@ -2,11 +2,11 @@ const Chat = require('../models/Chat');
 const User = require('../models/User');
 
 // @desc    Get chat by ID
-// @route   GET /api/chat/:id
+// @route   GET /api/chat/:chatId
 // @access  Private
 const getChat = async (req, res, next) => {
   try {
-    const chat = await Chat.findById(req.params.id)
+    const chat = await Chat.findById(req.params.chatId)
       .populate('participants', 'name profilePicture')
       .populate('messages.senderId', 'name profilePicture');
 
@@ -51,7 +51,7 @@ const getMyChats = async (req, res, next) => {
 };
 
 // @desc    Send a message in a chat (REST API fallback)
-// @route   POST /api/chat/:id/message
+// @route   POST /api/chat/:chatId/message
 // @access  Private
 const sendMessage = async (req, res, next) => {
   try {
@@ -61,7 +61,7 @@ const sendMessage = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Message text is required' });
     }
 
-    const chat = await Chat.findById(req.params.id);
+    const chat = await Chat.findById(req.params.chatId);
 
     if (!chat) {
       return res.status(404).json({ success: false, message: 'Chat not found' });

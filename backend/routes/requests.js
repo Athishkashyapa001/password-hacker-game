@@ -12,7 +12,7 @@ router.use(protect);
 
 router.post('/send', sendRequest);
 router.get('/', getMyRequests);
-router.post('/:id/accept', acceptRequest);
-router.post('/:id/reject', rejectRequest);
+router.post('/:requestId/accept', acceptRequest);
+router.post('/:requestId/reject', rejectRequest);
 
 module.exports = router;
