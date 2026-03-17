@@ -4,6 +4,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
@@ -15,11 +16,18 @@ const requestRoutes = require('./routes/requests');
 const chatRoutes = require('./routes/chat');
 const ratingRoutes = require('./routes/ratings');
 
-// Connect to MongoDB
-connectDB();
-
+// Initializations
 const app = express();
 const server = http.createServer(app);
+
+// Ensure uploads folder exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
+
+// Connect to MongoDB
+connectDB();
 
 // Socket.io setup
 const io = new Server(server, {
