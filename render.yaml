@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: skill-exchange-api
+    env: node
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGO_URI
+        fromValue: ${MONGO_URI}
+      - key: JWT_SECRET
+        fromValue: ${JWT_SECRET}
+      - key: CLIENT_URL
+        fromValue: ${CLIENT_URL}
