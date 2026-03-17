@@ -1,11 +1,4 @@
-import React, { useState, useContext } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import Card from '../components/Card';
-import Input from '../components/Input';
-import Button from '../components/Button';
-import Spinner from '../components/Spinner';
-import { LogIn, Globe, ShieldCheck, Mail, Lock, Database } from 'lucide-react';
+import { LogIn, Globe, ShieldCheck, Mail, Lock, Database, Cpu, Activity } from 'lucide-react';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -25,11 +18,15 @@ const LoginPage = () => {
     setIsSubmitting(true);
 
     try {
+      console.log("Attempting Session Establishment for:", email);
       await login(email, password);
       navigate(from, { replace: true });
     } catch (err) {
-      const msg = err.response?.data?.message || 'Invalid credentials. Network Error.';
-      const dbStatus = err.code === 'ERR_NETWORK' ? ' (Database cluster offline)' : '';
+      console.error("Login Error:", err);
+      const msg = err.response?.data?.message || 'AUTHENTICATION_FAILED: Credential mismatch.';
+      const dbStatus = err.code === 'ERR_NETWORK' || err.message.includes('Network') 
+        ? ' [UPLINK_OFFLINE]' 
+        : '';
       setError(msg + dbStatus);
     } finally {
       setIsSubmitting(false);
@@ -37,41 +34,54 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex flex-col items-center justify-center p-4">
-      <div className="mb-10 text-center animate-in fade-in slide-in-from-bottom-8 duration-1000">
-        <div className="inline-flex bg-gradient-to-br from-primary to-secondary p-5 rounded-[2rem] mb-6 shadow-teal-glow">
-          <Globe className="w-12 h-12 text-slate-900" />
-        </div>
-        <h1 className="text-5xl font-black mb-3 italic">ACCESS <span className="text-gradient leading-relaxed">PORTAL</span></h1>
-        <p className="text-textMuted max-w-sm text-sm font-medium italic">Synchronize your profile to the global node network.</p>
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#020617]">
+      {/* Background Decorative Elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-20">
+        <div className="absolute top-1/4 right-1/4 w-1/2 h-1/2 bg-primary/10 blur-[160px] rounded-full animate-pulse"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-1/2 h-1/2 bg-secondary/10 blur-[160px] rounded-full animate-pulse delay-700"></div>
       </div>
 
-      <Card className="w-full max-w-md shadow-luxury relative overflow-hidden !p-10">
-        <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
+      <div className="relative z-10 w-full max-w-md mb-12 text-center">
+        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-md animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <Activity className="w-4 h-4 text-secondary animate-pulse" />
+          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-textMuted">Session Protocol Active</span>
+        </div>
         
-        <form onSubmit={handleSubmit} className="flex flex-col gap-8 relative z-10">
+        <h1 className="text-6xl font-black mb-4 tracking-tighter text-white">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/40">SECURE</span>
+          <br />
+          <span className="text-secondary italic neon-glow">GATEWAY</span>
+        </h1>
+        <p className="text-textMuted text-sm font-medium italic">Synchronize your node identity with the centralized matrix.</p>
+      </div>
+
+      <Card className="w-full max-w-md !p-12 glass-card relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-primary/30 rounded-tr-sm transition-all group-hover:border-primary"></div>
+        <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-secondary/30 rounded-bl-sm transition-all group-hover:border-secondary"></div>
+        
+        <form onSubmit={handleSubmit} className="flex flex-col gap-10 relative z-10">
           {error && (
-            <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-[1.25rem] text-xs font-black uppercase tracking-widest flex items-center gap-3 animate-in zoom-in duration-300">
-              <Database className="w-4 h-4" />
+            <div className="bg-red-500/10 border-l-4 border-red-500 text-red-500 p-6 rounded-xs text-[11px] font-black uppercase tracking-widest mb-4 flex items-center gap-4 animate-in zoom-in duration-300">
+              <Database className="w-4 h-4 text-red-500" />
               {error}
             </div>
           )}
 
           <Input
             id="email"
-            label="Node Identity"
+            label="Node Identifier"
             type="email"
             icon={Mail}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
+            placeholder="operator@secure.net"
             required
             autoComplete="email"
           />
 
           <Input
             id="password"
-            label="Secure Key"
+            label="Authorization Key"
             type="password"
             icon={Lock}
             value={password}
@@ -85,26 +95,26 @@ const LoginPage = () => {
             type="submit" 
             size="lg"
             disabled={isSubmitting}
-            className="w-full mt-2 shadow-teal-glow"
+            className="w-full mt-4 shadow-teal-glow"
           >
             {isSubmitting ? <Spinner size="sm" className="mr-3" /> : <LogIn className="w-5 h-5 mr-3" />}
-            {isSubmitting ? 'Authenticating...' : 'Establish Session'}
+            {isSubmitting ? 'SYNCHRONIZING...' : 'ESTABLISH SESSION'}
           </Button>
         </form>
 
-        <div className="mt-10 pt-8 border-t border-white/5 text-center relative z-10">
-          <p className="text-textMuted text-sm font-medium">
-            New specialist?{' '}
-            <Link to="/signup" className="text-primary hover:text-teal-400 underline-offset-8 hover:underline transition-all">
+        <div className="mt-12 pt-10 border-t border-white/5 text-center relative z-10">
+          <p className="text-textMuted text-[10px] font-black uppercase tracking-[0.2em]">
+            New Specialist?{' '}
+            <Link to="/signup" className="text-secondary hover:text-white transition-all underline decoration-secondary/30 underline-offset-8">
               Initialize Enrollment
             </Link>
           </p>
         </div>
       </Card>
       
-      <div className="mt-10 flex items-center gap-2 text-textMuted/40 text-[10px] font-black uppercase tracking-[0.3em]">
-        <ShieldCheck className="w-4 h-4" />
-        Multi-Factor Node Security Active
+      <div className="mt-12 flex items-center gap-3 text-textMuted/30 text-[9px] font-black uppercase tracking-[0.4em]">
+        <ShieldCheck className="w-4 h-4 text-primary" />
+        End-to-End Encrypted Node Communication
       </div>
     </div>
   );
