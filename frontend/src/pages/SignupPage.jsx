@@ -5,7 +5,8 @@ import Card from '../components/Card';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
-import { UserPlus, Globe, CheckCircle2, ArrowRight, ArrowLeft, Target, Award } from 'lucide-react';
+import PasswordStrength from '../components/PasswordStrength';
+import { UserPlus, Globe, CheckCircle2, ArrowRight, ArrowLeft, Target, Award, User, Mail, Lock, Database } from 'lucide-react';
 
 const SignupPage = () => {
   const [step, setStep] = useState(1);
@@ -32,6 +33,9 @@ const SignupPage = () => {
     if (formData.password !== formData.confirmPassword) {
       return setError('Passwords do not match');
     }
+    if (formData.password.length < 6) {
+      return setError('Password must be at least 6 characters');
+    }
     setError('');
     setStep(2);
   };
@@ -56,89 +60,99 @@ const SignupPage = () => {
       await register(processedData);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      const msg = err.response?.data?.message || 'Registration failed. Network Error.';
+      const dbStatus = err.code === 'ERR_NETWORK' ? ' (Database cluster offline)' : '';
+      setError(msg + dbStatus);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-[90vh] flex flex-col items-center justify-center p-4">
+    <div className="min-h-[95vh] flex flex-col items-center justify-center p-4">
       {/* Progress Header */}
-      <div className="mb-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
-        <div className="inline-flex bg-gradient-to-br from-primary to-secondary p-4 rounded-3xl mb-6 shadow-teal-glow">
-          <Globe className="w-10 h-1h text-slate-900" />
+      <div className="mb-10 text-center animate-in fade-in slide-in-from-bottom-6 duration-700">
+        <div className="inline-flex bg-gradient-to-br from-primary to-secondary p-5 rounded-[2rem] mb-6 shadow-teal-glow">
+          <Globe className="w-12 h-12 text-slate-900" />
         </div>
-        <h1 className="text-4xl font-black mb-3">
-          Step <span className="text-gradient">{step}</span> of 2
+        <h1 className="text-5xl font-black mb-3 italic">
+          NODE <span className="text-gradient leading-relaxed">ENROLLMENT</span>
         </h1>
-        <p className="text-textMuted max-w-sm">
+        <p className="text-textMuted max-w-sm text-sm font-medium">
           {step === 1 
-            ? "Let's start with the basics to secure your account." 
-            : "Now tell us what you bring to the table and what you're looking for."}
+            ? "Establish your identity on the global skill network." 
+            : "Configure your expertise and requirement nodes."}
         </p>
 
         {/* Mini progress bar */}
-        <div className="flex gap-2 justify-center mt-6">
-          <div className={`h-1.5 w-12 rounded-full transition-all duration-500 ${step >= 1 ? 'bg-primary shadow-teal-glow' : 'bg-slate-800'}`}></div>
-          <div className={`h-1.5 w-12 rounded-full transition-all duration-500 ${step >= 2 ? 'bg-primary shadow-teal-glow' : 'bg-slate-800'}`}></div>
+        <div className="flex gap-3 justify-center mt-8">
+          <div className={`h-1.5 w-16 rounded-full transition-all duration-700 ${step >= 1 ? 'bg-primary shadow-teal-glow' : 'bg-white/5'}`}></div>
+          <div className={`h-1.5 w-16 rounded-full transition-all duration-700 ${step >= 2 ? 'bg-primary shadow-teal-glow' : 'bg-white/5'}`}></div>
         </div>
       </div>
 
-      <Card className="w-full max-w-xl shadow-luxury">
+      <Card className="w-full max-w-xl shadow-luxury !p-10 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[80px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
+        
         {error && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl text-sm mb-6 flex items-center gap-3 animate-in fade-in zoom-in duration-300">
-            <span className="w-2 h-2 rounded-full bg-red-500"></span>
+          <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-[1.25rem] text-xs font-black uppercase tracking-widest mb-8 flex items-center gap-3 animate-in zoom-in duration-300">
+            <Database className="w-4 h-4" />
             {error}
           </div>
         )}
 
         {step === 1 ? (
-          <form onSubmit={nextStep} className="flex flex-col gap-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form onSubmit={nextStep} className="flex flex-col gap-8 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <Input
                 id="name"
-                label="Full Name"
+                label="Identity Name"
                 type="text"
+                icon={User}
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="John Doe"
+                placeholder="Ex: John Doe"
                 required
               />
               <Input
                 id="email"
-                label="Email Address"
+                label="Network Address"
                 type="email"
+                icon={Mail}
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="you@example.com"
+                placeholder="email@provider.com"
                 required
               />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Input
-                id="password"
-                label="Password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Secure password"
-                required
-                minLength={6}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-1">
+                <Input
+                  id="password"
+                  label="Secure Key"
+                  type="password"
+                  icon={Lock}
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  required
+                />
+                <PasswordStrength password={formData.password} />
+              </div>
               <Input
                 id="confirmPassword"
-                label="Confirm Password"
+                label="Verify Key"
                 type="password"
+                icon={ShieldCheck}
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                placeholder="Repeat password"
+                placeholder="Confirm Key"
                 required
               />
             </div>
-            <Button type="submit" className="w-full mt-4 group">
-              Next Step
-              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            <Button type="submit" size="lg" className="w-full mt-4 group shadow-teal-glow">
+              Initialize Step 2
+              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform" />
             </Button>
           </form>
         ) : (
