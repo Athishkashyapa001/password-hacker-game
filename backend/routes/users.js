@@ -11,7 +11,8 @@ const upload = require('../middleware/upload');
 
 router.use(protect);
 
-router.get('/profile/:id?', getProfile);
+router.get('/profile', getProfile);
+router.get('/profile/:id', getProfile);
 router.put('/profile', upload.single('profilePicture'), updateProfile);
 router.get('/matches', getMatches);
 router.get('/search', searchUsers);
