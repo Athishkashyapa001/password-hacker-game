@@ -8,7 +8,7 @@ import Avatar from '../components/Avatar';
 import Badge from '../components/Badge';
 import Spinner from '../components/Spinner';
 import EmptyState from '../components/EmptyState';
-import { Users, ArrowRight, MessageSquare, Clock, Globe, Zap, Star, LayoutGrid, Terminal, Shield } from 'lucide-react';
+import { Users, ArrowRight, MessageSquare, Clock, Globe, Zap, Star, LayoutGrid, Terminal, Shield, Activity } from 'lucide-react';
 
 const DashboardPage = () => {
   const { user } = useContext(AuthContext);

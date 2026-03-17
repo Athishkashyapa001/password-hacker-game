@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { LogOut, User, MessageCircle, LayoutDashboard, Globe } from 'lucide-react';
+import { LogOut, Globe, Cpu, Activity, Shield } from 'lucide-react';
 import Button from './Button';
 import Avatar from './Avatar';
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
@@ -15,48 +16,55 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="sticky top-4 z-50 px-4 mb-8">
-      <div className="max-w-7xl mx-auto glass-card !p-3 rounded-2xl flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group ml-2">
-          <div className="bg-gradient-to-br from-primary to-secondary p-2 rounded-xl group-hover:rotate-12 transition-transform shadow-teal-glow">
-            <Globe className="w-5 h-5 text-slate-900" />
+    <nav className="sticky top-6 z-50 px-6 mb-12">
+      <div className="max-w-7xl mx-auto glass-card !p-4 rounded-sm flex items-center justify-between border-b-2 border-primary/20">
+        <Link to="/" className="flex items-center gap-4 group ml-2">
+          <div className="bg-primary p-2 rounded-sm group-hover:rotate-90 transition-transform duration-500 shadow-teal-glow">
+            <Cpu className="w-5 h-5 text-slate-900" />
           </div>
-          <span className="text-xl font-black tracking-tight text-gradient hidden sm:block">ROUTEMASTER</span>
+          <div className="flex flex-col">
+            <span className="text-xl font-black tracking-[0.2em] text-white hidden sm:block">ROUTEMASTER</span>
+            <span className="text-[8px] font-black text-primary tracking-[0.5em] hidden sm:block uppercase">Core Matrix v4.0</span>
+          </div>
         </Link>
 
-        <div className="hidden md:flex items-center gap-1">
-          {isAuthenticated ? (
-            <>
-              <Link to="/dashboard" className="px-4 py-2 text-sm font-bold text-textMuted hover:text-primary transition-colors">Dashboard</Link>
-              <Link to="/marketplace" className="px-4 py-2 text-sm font-bold text-textMuted hover:text-primary transition-colors">Marketplace</Link>
-              <Link to="/requests" className="px-4 py-2 text-sm font-bold text-textMuted hover:text-primary transition-colors">Requests</Link>
-              <Link to="/chat" className="px-4 py-2 text-sm font-bold text-textMuted hover:text-primary transition-colors">Messages</Link>
-            </>
-          ) : (
-            <>
-              <Link to="/marketplace" className="px-4 py-2 text-sm font-bold text-textMuted hover:text-primary transition-colors">Browse</Link>
-            </>
-          )}
-        </div>
+        {isAuthenticated && (
+          <div className="hidden md:flex items-center gap-12">
+            <Link to="/dashboard" className={`text-[10px] font-black uppercase tracking-[0.3em] transition-all hover:text-primary ${location.pathname === '/dashboard' ? 'text-primary' : 'text-textMuted'}`}>
+              Command Center
+            </Link>
+            <Link to="/marketplace" className={`text-[10px] font-black uppercase tracking-[0.3em] transition-all hover:text-secondary ${location.pathname === '/marketplace' ? 'text-secondary' : 'text-textMuted'}`}>
+              Exchange Network
+            </Link>
+            <Link to="/chat" className={`text-[10px] font-black uppercase tracking-[0.3em] transition-all hover:text-primary ${location.pathname === '/chat' ? 'text-primary' : 'text-textMuted'}`}>
+              Uplinks
+            </Link>
+          </div>
+        )}
 
-        <div className="flex items-center gap-3 mr-2">
+        <div className="flex items-center gap-6 mr-2">
           {isAuthenticated ? (
-            <div className="flex items-center gap-4">
-              <Link to="/profile" className="flex items-center gap-2 p-1 pl-3 rounded-full hover:bg-white/5 transition-colors border border-transparent hover:border-slate-800">
-                <span className="text-sm font-bold hidden lg:block">{user.name}</span>
-                <Avatar src={user.profilePicture} alt={user.name} size="xs" />
+            <div className="flex items-center gap-6">
+              <Link to="/profile">
+                <div className="flex items-center gap-4 group/nav cursor-pointer">
+                  <div className="text-right hidden lg:block">
+                    <p className="text-[10px] font-black text-white uppercase tracking-widest group-hover/nav:text-primary transition-colors">{user?.name}</p>
+                    <p className="text-[8px] font-black text-primary uppercase tracking-tighter">OPERATOR_ID: {user?._id?.slice(-4)}</p>
+                  </div>
+                  <Avatar src={user?.profilePicture} alt={user?.name} size="sm" className="ring-2 ring-white/5 border-none group-hover/nav:ring-primary/50 transition-all" />
+                </div>
               </Link>
-              <Button onClick={handleLogout} variant="ghost" size="sm">
-                <LogOut className="w-4 h-4" />
+              <Button onClick={handleLogout} variant="ghost" size="sm" className="!p-2 text-textMuted hover:text-red-500 hover:bg-red-500/5">
+                <LogOut className="w-5 h-5" />
               </Button>
             </div>
           ) : (
-            <div className="flex gap-2">
+            <div className="flex gap-4">
               <Link to="/login">
-                <Button variant="ghost" size="sm">Log In</Button>
+                <Button variant="ghost" size="sm" className="text-[10px] tracking-widest">LOGIN</Button>
               </Link>
               <Link to="/signup">
-                <Button variant="primary" size="sm">Get Started</Button>
+                <Button variant="primary" size="sm" className="text-[10px] tracking-widest">ENROLL</Button>
               </Link>
             </div>
           )}

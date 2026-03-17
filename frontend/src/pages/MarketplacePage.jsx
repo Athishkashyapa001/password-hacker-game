@@ -8,46 +8,6 @@ import Avatar from '../components/Avatar';
 import Badge from '../components/Badge';
 import Spinner from '../components/Spinner';
 import EmptyState from '../components/EmptyState';
-import { Search, MapPin, ArrowRight, Filter, Globe, Sparkles, Award, Target } from 'lucide-react';
-
-const MarketplacePage = () => {
-  const [users, setUsers] = useState([]);
-  const [query, setQuery] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [isSearching, setIsSearching] = useState(false);
-
-  const fetchUsers = async (searchQuery = '') => {
-    setIsSearching(true);
-    try {
-      const res = await api.get(`/users/search${searchQuery ? `?query=${searchQuery}` : ''}`);
-      setUsers(res.data.users);
-    } catch (err) {
-      console.error('Error fetching users', err);
-    } finally {
-      setLoading(false);
-      setIsSearching(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    fetchUsers(query);
-  };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-12 animate-in fade-in duration-700 pb-20">
 import { Search, MapPin, ArrowRight, Filter, Globe, Sparkles, Award, Target, Cpu, Activity, ShieldSearch } from 'lucide-react';
 
 const MarketplacePage = () => {
